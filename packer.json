@@ -1,0 +1,47 @@
+{
+  "builders": [{
+    "type": "virtualbox-iso",
+    "vm_name": "debian-wheezy-64",
+    "http_directory": "http",
+    "iso_url": "http://cdimage.debian.org/debian-cd/7.7.0/amd64/iso-cd/debian-7.7.0-amd64-netinst.iso",
+    "iso_checksum": "be34b4fa4d307698ef2ac520979879d9e25a49a4",
+    "iso_checksum_type": "sha1",
+    "guest_os_type": "Debian_64",
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+    "virtualbox_version_file": ".vbox_version",
+    "disk_size": "50000",
+    "hard_drive_interface": "sata",
+    "iso_interface": "sata",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_wait_timeout": "10000s",
+    "boot_command": [
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=fr",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
+    ],
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
+    "vboxmanage": [
+      ["modifyvm", "{{.Name}}", "--memory", "1024"],
+      ["modifyvm", "{{.Name}}", "--cpus", "2"]
+    ]
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+    "scripts": [
+      "scripts/bootstrap"
+    ]
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "output": "debian-wheezy-64.box"
+  }]
+}

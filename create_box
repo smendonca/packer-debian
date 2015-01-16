@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+export PACKER_LOG=1
+rm -f debian-wheezy-64.box || true
+packer build -only virtualbox-iso packer.json
