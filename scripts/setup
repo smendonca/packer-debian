@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -e
+
+# Sudo privileges to vagrant user
+echo 'vagrant ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/99_vagrant
+chmod 440 /etc/sudoers.d/99_vagrant
+echo "Defaults !requiretty" >>/etc/sudoers
+
+# Add ssh key to vagrant user
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+wget --no-check-certificate 'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' -O ~/.ssh/authorized_keys2
+chmod 600 ~/.ssh/authorized_keys2
+chown -R vagrant: ~/.ssh
+
+# Disable SSH DNS Lookup
+echo 'UseDNS no' >> /etc/ssh/sshd_config
+
+# Config APT and upgrade system
+cat << 'EOF' > /etc/apt/sources.list
+deb http://ftp.fr.debian.org/debian/ wheezy main
+deb http://security.debian.org/ wheezy/updates main
+EOF
+aptitude -y update
+aptitude -y safe-upgrade
+
+# Install ruby dependencies
+aptitude -y -q --without-recommends install gcc make libc6-dev g++ automake autoconf build-essential libffi-dev libssl-dev libreadline6-dev zlib1g-dev libxslt-dev libreadline-dev git-core libmysqlclient-dev libcurl4-openssl-dev
+
+# Install Rbenv
+RBENV_ROOT='/usr/local/rbenv'
+git clone git://github.com/sstephenson/rbenv.git $RBENV_ROOT
+mkdir -p $RBENV_ROOT/plugins
+git clone git://github.com/sstephenson/ruby-build.git $RBENV_ROOT/plugins/ruby-build
+cat << 'EOF' > /etc/profile.d/rbenv.sh
+export RBENV_ROOT='/usr/local/rbenv'
+export PATH="$RBENV_ROOT/bin:$PATH"
+eval "$(rbenv init -)" 
+EOF
+chmod 755 /etc/profile.d/rbenv.sh
+source /etc/profile.d/rbenv.sh
+
+# Build ruby 1.9 and 2.2
+for version in 1.9.3-p194 2.2.0
+do
+  CONFIGURE_OPTS='--disable-install-rdoc' rbenv install $version
+
+  [ $version == '1.9.3-p194' ] && RBENV_VERSION=$version gem install puppet --version=3.7.3 --no-ri --no-rdoc
+  RBENV_VERSION=$version gem install bundler   --version=1.8.0 --no-ri --no-rdoc
+  RBENV_VERSION=$version gem install passenger --version=5.0.5 --no-ri --no-rdoc
+
+  RBENV_VERSION=$version rbenv rehash
+done
+rbenv global 1.9.3-p194
