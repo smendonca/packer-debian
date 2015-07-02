@@ -4,5 +4,5 @@ PATH="$PATH:$(pwd)/bin"
 
 #export PACKER_LOG=1
 
-rm -f debian-wheezy-64.box
+rm -f debian-jessie-64.box
 packer build -only virtualbox-iso packer.json

@@ -1,13 +1,13 @@
 {
   "builders": [{
     "type": "virtualbox-iso",
-    "vm_name": "debian-jessie-64",
+    "vm_name": "debian-wheezy-64",
     "http_directory": "http",
-    "iso_url": "http://cdimage.debian.org/debian-cd/8.1.0/amd64/iso-cd/debian-8.1.0-amd64-netinst.iso",
-    "iso_checksum": "7844a8e84afe7a168a8f893b298d0dd06d869deffc73fef27791a252688a9d2affc6e4f46b2c5db4794054cec84365f2107c012f1025eb85826bb340134932ec",
-    "iso_checksum_type": "SHA512",
+    "iso_url": "http://cdimage.debian.org/debian-cd/7.8.0/amd64/iso-cd/debian-7.8.0-amd64-netinst.iso",
+    "iso_checksum": "e63fc19d23dd614f4e2f129237ea6517858ff8cc",
+    "iso_checksum_type": "sha1",
     "guest_os_type": "Debian_64",
-    "guest_additions_path": "VBoxGuestAdditions.iso",
+    "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
     "virtualbox_version_file": ".vbox_version",
     "disk_size": "50000",
     "hard_drive_interface": "sata",
@@ -43,6 +43,6 @@
   }],
   "post-processors": [{
     "type": "vagrant",
-    "output": "debian-jessie-64.box"
+    "output": "debian-wheezy-64.box"
   }]
 }
