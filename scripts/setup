@@ -25,6 +25,11 @@ EOF
 aptitude -y update
 aptitude -y safe-upgrade
 
+# Fix
+sed -i "s|set timeout=-1|set timeout=5|g" /boot/grub/grub.cfg
+/usr/sbin/update-grub
+sed -i "s|exit 0|/etc/init.d/networking restart\nexit 0|g" /etc/rc.local
+
 # Install ruby dependencies
 aptitude -y -q --without-recommends install gcc make libc6-dev g++ automake autoconf build-essential libffi-dev libssl-dev libreadline6-dev zlib1g-dev libxslt-dev libreadline-dev git-core libmysqlclient-dev libcurl4-openssl-dev
 
@@ -42,6 +47,14 @@ EOF
 chmod 755 /etc/profile.d/rbenv.sh
 source /etc/profile.d/rbenv.sh
 
+# Configure Gemrc
+cat << EOF > /root/.gemrc
+install: --no-rdoc --no-ri
+update:  --no-rdoc --no-ri
+EOF
+cp /root/.gemrc /home/vagrant/
+chown vagrant: /home/vagrant/.gemrc
+
 # Build ruby 1.9, 2.0 and 2.2
 for version in 1.9.3-p194 2.0.0-p645 2.2.2
 do
@@ -49,7 +62,7 @@ do
 
   [ $version == '2.0.0-p645' ] && RBENV_VERSION=$version gem install puppet --version=3.7.3 --no-ri --no-rdoc
   RBENV_VERSION=$version gem install bundler   --version=1.10.5 --no-ri --no-rdoc
-  RBENV_VERSION=$version gem install passenger --version=5.0.15 --no-ri --no-rdoc
+  RBENV_VERSION=$version gem install passenger --version=5.0.23 --no-ri --no-rdoc
 
   RBENV_VERSION=$version rbenv rehash
 done

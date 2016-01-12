@@ -2,7 +2,8 @@
 
 PATH="$PATH:$(pwd)/bin"
 
-#export PACKER_LOG=1
+VERSION="jessie"
 
-rm -f debian-jessie-64.box
+[ -f debian-$VERSION.box ] && rm -f debian-$VERSION.box
+
 packer build -only virtualbox-iso packer.json
