@@ -1,4 +1,5 @@
 packer_cache
 *.box
 bin/packer*
+packer
 .vagrant

@@ -8,7 +8,7 @@ chmod 440 /etc/sudoers.d/99_vagrant
 echo "Defaults !requiretty" >>/etc/sudoers
 
 # Add ssh key to vagrant user
-mkdir ~/.ssh
+mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 wget --no-check-certificate 'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' -O ~/.ssh/authorized_keys2
 chmod 600 ~/.ssh/authorized_keys2
@@ -28,7 +28,9 @@ aptitude -y safe-upgrade
 # Fix
 sed -i "s|set timeout=-1|set timeout=5|g" /boot/grub/grub.cfg
 /usr/sbin/update-grub
-sed -i "s|exit 0|/etc/init.d/networking restart\nexit 0|g" /etc/rc.local
+
+# https://github.com/mitchellh/vagrant/pull/7241
+aptitude -y -q --without-recommends install libnss-myhostname 
 
 # Install ruby dependencies
 aptitude -y -q --without-recommends install gcc make libc6-dev g++ automake autoconf build-essential libffi-dev libssl-dev libreadline6-dev zlib1g-dev libxslt-dev libreadline-dev libreadline6-dev git-core libmysqlclient-dev libcurl4-openssl-dev
@@ -55,15 +57,18 @@ EOF
 cp /root/.gemrc /home/vagrant/
 chown vagrant: /home/vagrant/.gemrc
 
+aptitude -y -q --without-recommends install vim
+echo 'syn on' >~/.vimrc
+
 # Build ruby
-for version in 1.9.3-p194 2.0.0-p645 2.1.8 2.2.2 2.2.4
+for version in 2.2.2 2.2.4
 do
   CONFIGURE_OPTS='--disable-install-rdoc' rbenv install $version
 
-  [ $version == '2.1.8' ] && RBENV_VERSION=$version gem install rack --version=1.6.4
+  [ $version == '2.2.4' ] && RBENV_VERSION=$version gem install rack --version=1.6.4
   RBENV_VERSION=$version gem install bundler   --version=1.10.5 --no-ri --no-rdoc
-  RBENV_VERSION=$version gem install passenger --version=5.0.23 --no-ri --no-rdoc
+  RBENV_VERSION=$version gem install passenger --version=5.0.28 --no-ri --no-rdoc
 
   RBENV_VERSION=$version rbenv rehash
 done
-rbenv global 2.0.0-p645
+rbenv global 2.2.4

@@ -1,4 +1,24 @@
-Debian Jessie 8.1 Packer for Virtualbox only
+Packer config for Debian and Virtualbox
 
-Rbenv with Bundler 1.10 and Passenger 5
-Ruby 1.9.3-p194, 2.0.0-p645 (default), 2.2.2
+- Debian Jessie 8.5
+- Rbenv
+- Gem Bundler 
+- Gem Passenger 5
+- Ruby 2.2.2
+- Ruby 2.2.4 (default)
+
+## Requirements
+
+- Packer : https://www.packer.io/downloads.html
+
+## Usage
+
+Build a new box
+```
+$ bash build
+```
+
+Test box
+```
+$ vagrant up
+```

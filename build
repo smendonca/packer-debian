@@ -1,9 +1,15 @@
 #!/bin/bash
 
-PATH="$PATH:$(pwd)/bin"
-
 VERSION="jessie"
 
-[ -f debian-$VERSION.box ] && rm -f debian-$VERSION.box
+if which packer > /dev/null 2>&1; then
+  PACKER=$(which packer)
+elif [ -x packer ]; then
+  PACKER=$(pwd)'/packer'
+else
+  echo "Packer not found"
+  exit 1
+fi
 
-packer build -only virtualbox-iso packer.json
+[ -f debian-$VERSION.box ] && rm -f debian-$VERSION.box
+$PACKER build -only virtualbox-iso packer.json
