@@ -1,8 +1,8 @@
 Packer config for Debian and Virtualbox
 
-- Debian Jessie 8.5
+- Debian Stretch 9.1
 - Rbenv
-- Gem Bundler 
+- Gem Bundler
 - Gem Passenger 5
 - Ruby 2.2.2
 - Ruby 2.2.4 (default)

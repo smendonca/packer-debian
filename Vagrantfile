@@ -3,7 +3,7 @@
 
 Vagrant.configure('2') do |config|
   config.vm.box      = 'packer-debian'
-  config.vm.box_url  = 'debian-jessie-64.box'
+  config.vm.box_url  = 'debian-stretch-64.box'
 
   config.vm.provider :virtualbox do |vb|
     vb.customize ['modifyvm', :id, '--ostype',  'Debian_64']

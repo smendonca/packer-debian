@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="jessie"
+VERSION="stretch"
 
 if which packer > /dev/null 2>&1; then
   PACKER=$(which packer)

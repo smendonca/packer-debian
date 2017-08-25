@@ -19,9 +19,10 @@ echo 'UseDNS no' >> /etc/ssh/sshd_config
 
 # Config APT and upgrade system
 cat << 'EOF' > /etc/apt/sources.list
-deb http://ftp.fr.debian.org/debian/ jessie main
-deb http://security.debian.org/ jessie/updates main
+deb http://ftp.fr.debian.org/debian/ stretch main
+deb http://security.debian.org/ stretch/updates main
 EOF
+which aptitude || apt-get -y install aptitude
 aptitude -y update
 aptitude -y safe-upgrade
 
@@ -30,10 +31,10 @@ sed -i "s|set timeout=-1|set timeout=5|g" /boot/grub/grub.cfg
 /usr/sbin/update-grub
 
 # https://github.com/mitchellh/vagrant/pull/7241
-aptitude -y -q --without-recommends install libnss-myhostname 
+aptitude -y -q --without-recommends install libnss-myhostname
 
 # Install ruby dependencies
-aptitude -y -q --without-recommends install gcc make libc6-dev g++ automake autoconf build-essential libffi-dev libssl-dev libreadline6-dev zlib1g-dev libxslt-dev libreadline-dev libreadline6-dev git-core libmysqlclient-dev libcurl4-openssl-dev
+aptitude -y -q --without-recommends install gcc make libc6-dev g++ automake autoconf libssl1.0-dev build-essential libffi-dev libssl1.1 libreadline6-dev zlib1g-dev libxslt-dev libreadline-dev libreadline6-dev git-core libcurl4-openssl-dev default-libmysqlclient-dev
 
 # Install Rbenv
 RBENV_ROOT='/usr/local/rbenv'
@@ -61,7 +62,7 @@ aptitude -y -q --without-recommends install vim
 echo 'syn on' >~/.vimrc
 
 # Build ruby
-for version in 2.2.2 2.2.4
+for version in 2.2.4
 do
   CONFIGURE_OPTS='--disable-install-rdoc' rbenv install $version
 
