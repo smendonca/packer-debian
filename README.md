@@ -1,17 +1,20 @@
-Packer config for Debian and Virtualbox
+Packer Debian
+=============
+
+### Packer config for Debian and Virtualbox
 
 - Debian Stretch 9.1
 - Rbenv
-- Gem Bundler
-- Gem Passenger 5
+- Bundler
+- Passenger 5
 - Ruby 2.2.2
 - Ruby 2.2.4 (default)
 
-## Requirements
+### Requirements
 
 - Packer : https://www.packer.io/downloads.html
 
-## Usage
+### Usage
 
 Build a new box
 ```
